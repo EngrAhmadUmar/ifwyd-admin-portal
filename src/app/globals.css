@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-neutral-900;
+    font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .content-editor p {
+    @apply mb-4;
+  }
+
+  .content-editor ul {
+    @apply mb-4 list-disc space-y-1 pl-5;
+  }
+
+  .content-editor li {
+    @apply text-[15px] font-light leading-7 text-neutral-900;
+  }
+
+  .content-editor strong {
+    @apply font-semibold;
+  }
+}
