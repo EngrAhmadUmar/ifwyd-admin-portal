@@ -7,25 +7,33 @@ import { VOLUNTEER_PER_PAGE, type SubmissionStatus, type VolunteerApplication } 
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
-type PendingAction = { type: "contacted" | "archive" | "delete"; id: string };
+type PendingAction = { type: "contacted" | "archive" | "delete"; id: string; title: string };
 
-const MODAL_CONFIG: Record<PendingAction["type"], { title: string; description: string; confirmLabel: string }> = {
-  contacted: {
-    title: "Mark as Contacted",
-    description: "Mark this application as contacted?",
-    confirmLabel: "Mark Contacted",
-  },
-  archive: {
-    title: "Archive Application",
-    description: "Archive this application? It will be moved out of the active list.",
-    confirmLabel: "Archive",
-  },
-  delete: {
-    title: "Delete Application",
-    description: "This will permanently remove this application. This cannot be undone.",
-    confirmLabel: "Delete",
-  },
-};
+function getModalConfig(action: PendingAction) {
+  switch (action.type) {
+    case "contacted":
+      return {
+        title: "Mark as Contacted",
+        description: `Mark "${action.title}"'s application as contacted?`,
+        confirmLabel: "Mark Contacted",
+        danger: false,
+      };
+    case "archive":
+      return {
+        title: "Archive Application",
+        description: `Archive "${action.title}"'s application? It will be moved out of the active list.`,
+        confirmLabel: "Archive",
+        danger: false,
+      };
+    case "delete":
+      return {
+        title: "Delete this application?",
+        description: `"${action.title}"'s application will be permanently removed. This action can't be undone.`,
+        confirmLabel: "Delete",
+        danger: true,
+      };
+  }
+}
 
 const STATUS_STYLES: Record<SubmissionStatus, string> = {
   New: "bg-[#E8F5E9] text-[#13BE00]",
@@ -101,7 +109,7 @@ export default function VolunteerPage() {
     setPendingAction(null);
   }
 
-  const modal = pendingAction ? MODAL_CONFIG[pendingAction.type] : null;
+  const modal = pendingAction ? getModalConfig(pendingAction) : null;
 
   return (
     <div className="flex mt-3 h-full min-h-0 flex-col">
@@ -151,9 +159,9 @@ export default function VolunteerPage() {
                 <ActionMenu
                   ariaLabel="Application actions"
                   items={[
-                    { label: "Mark Contacted", onClick: () => setPendingAction({ type: "contacted", id: app.id }) },
-                    { label: "Archive", onClick: () => setPendingAction({ type: "archive", id: app.id }) },
-                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: app.id }) },
+                    { label: "Mark Contacted", onClick: () => setPendingAction({ type: "contacted", id: app.id, title: app.name }) },
+                    { label: "Archive", onClick: () => setPendingAction({ type: "archive", id: app.id, title: app.name }) },
+                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: app.id, title: app.name }) },
                   ]}
                 />
               </div>
@@ -195,6 +203,7 @@ export default function VolunteerPage() {
           description={modal.description}
           confirmLabel={modal.confirmLabel}
           cancelLabel="Cancel"
+          variant={modal.danger ? "danger" : "default"}
         />
       )}
     </div>

@@ -14,7 +14,8 @@ export type ConfirmModalProps = {
   confirmLabel?: string;
   cancelLabel?: string;
   confirmDisabled?: boolean;
-  confirmClassName?: string;
+  /** "danger" renders a red confirm button for destructive actions like delete. */
+  variant?: "default" | "danger";
 };
 
 export function ConfirmModal({
@@ -26,7 +27,7 @@ export function ConfirmModal({
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   confirmDisabled = false,
-  confirmClassName,
+  variant = "default",
 }: ConfirmModalProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -63,36 +64,31 @@ export function ConfirmModal({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
-        className="relative flex h-[322px] w-[524px] max-w-[calc(100vw-2rem)] flex-col rounded-[20px] bg-white px-8 pb-8 pt-10 shadow-xl"
+        className="relative w-[420px] max-w-[calc(100vw-2rem)] rounded-2xl bg-white p-6 shadow-xl"
       >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
-          aria-label="Close"
-        >
-          <X className="h-5 w-5" strokeWidth={2} />
-        </button>
-
-        <h2
-          id={titleId}
-          className="shrink-0 text-center text-[22px] font-semibold leading-tight text-neutral-900"
-        >
-          {title}
-        </h2>
-
-        <p
-          id={descriptionId}
-          className="mx-auto mt-[42px] max-w-[420px] shrink-0 text-center text-[15px] font-light leading-6 text-neutral-900"
-        >
-          {description}
-        </p>
-
-        <div className="mt-auto flex justify-center gap-4 pt-6">
+        <div className="flex items-start justify-between gap-3">
+          <h2 id={titleId} className="text-[17px] font-semibold leading-tight text-neutral-900">
+            {title}
+          </h2>
           <button
             type="button"
             onClick={onClose}
-            className="h-[52px] w-[177px] rounded-full bg-[#F0F0F0] text-[15px] font-medium text-neutral-900 transition-colors hover:bg-[#E8E8E8]"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" strokeWidth={2} />
+          </button>
+        </div>
+
+        <p id={descriptionId} className="mt-3 text-center text-[13px] leading-relaxed text-neutral-500">
+          {description}
+        </p>
+
+        <div className="mt-6 flex justify-center gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-11 flex-1 rounded-full bg-[#F0F0F0] text-[14px] font-medium text-neutral-900 transition-colors hover:bg-[#E8E8E8]"
           >
             {cancelLabel}
           </button>
@@ -101,8 +97,8 @@ export function ConfirmModal({
             onClick={onConfirm}
             disabled={confirmDisabled}
             className={cn(
-              "h-[52px] w-[177px] rounded-full bg-black text-[15px] font-medium text-white transition-colors hover:bg-neutral-900 disabled:cursor-not-allowed disabled:opacity-60",
-              confirmClassName,
+              "h-11 flex-1 rounded-full text-[14px] font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+              variant === "danger" ? "bg-[#EF4444] hover:bg-[#DC2626]" : "bg-black hover:bg-neutral-900",
             )}
           >
             {confirmLabel}

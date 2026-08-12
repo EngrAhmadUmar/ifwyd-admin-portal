@@ -7,25 +7,33 @@ import { CLASSROOMS_PER_PAGE, type Classroom, type ClassroomStatus } from "@/lib
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
-type PendingAction = { type: "activate" | "close" | "delete"; id: string };
+type PendingAction = { type: "activate" | "close" | "delete"; id: string; title: string };
 
-const MODAL_CONFIG: Record<PendingAction["type"], { title: string; description: string; confirmLabel: string }> = {
-  activate: {
-    title: "Activate Classroom",
-    description: "Activate this classroom? It will accept new enrollments.",
-    confirmLabel: "Activate",
-  },
-  close: {
-    title: "Close Classroom",
-    description: "Close this classroom? It will stop accepting new enrollments.",
-    confirmLabel: "Close",
-  },
-  delete: {
-    title: "Delete Classroom",
-    description: "This will permanently remove this classroom. This cannot be undone.",
-    confirmLabel: "Delete",
-  },
-};
+function getModalConfig(action: PendingAction) {
+  switch (action.type) {
+    case "activate":
+      return {
+        title: "Activate Classroom",
+        description: `Activate "${action.title}"? It will accept new enrollments.`,
+        confirmLabel: "Activate",
+        danger: false,
+      };
+    case "close":
+      return {
+        title: "Close Classroom",
+        description: `Close "${action.title}"? It will stop accepting new enrollments.`,
+        confirmLabel: "Close",
+        danger: false,
+      };
+    case "delete":
+      return {
+        title: "Delete this classroom?",
+        description: `"${action.title}" will be removed from the website. This action can't be undone.`,
+        confirmLabel: "Delete",
+        danger: true,
+      };
+  }
+}
 
 const STATUS_STYLES: Record<ClassroomStatus, string> = {
   Active: "bg-[#E8F5E9] text-[#13BE00]",
@@ -101,7 +109,7 @@ export default function ClassroomsPage() {
     setPendingAction(null);
   }
 
-  const modal = pendingAction ? MODAL_CONFIG[pendingAction.type] : null;
+  const modal = pendingAction ? getModalConfig(pendingAction) : null;
 
   return (
     <div className="flex mt-3 h-full min-h-0 flex-col">
@@ -153,9 +161,16 @@ export default function ClassroomsPage() {
                     {
                       label: classroom.status === "Active" ? "Close" : "Activate",
                       onClick: () =>
-                        setPendingAction({ type: classroom.status === "Active" ? "close" : "activate", id: classroom.id }),
+                        setPendingAction({
+                          type: classroom.status === "Active" ? "close" : "activate",
+                          id: classroom.id,
+                          title: classroom.name,
+                        }),
                     },
-                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: classroom.id }) },
+                    {
+                      label: "Delete",
+                      onClick: () => setPendingAction({ type: "delete", id: classroom.id, title: classroom.name }),
+                    },
                   ]}
                 />
               </div>
@@ -197,6 +212,7 @@ export default function ClassroomsPage() {
           description={modal.description}
           confirmLabel={modal.confirmLabel}
           cancelLabel="Cancel"
+          variant={modal.danger ? "danger" : "default"}
         />
       )}
     </div>

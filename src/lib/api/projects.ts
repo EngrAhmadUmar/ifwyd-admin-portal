@@ -1,4 +1,11 @@
-import { mockProjects, PROJECTS_PER_PAGE, type Project, type ProjectStatus } from "@/lib/projects-data";
+import {
+  createMockProject,
+  mockProjects,
+  PROJECTS_PER_PAGE,
+  type Project,
+  type ProjectFocusArea,
+  type ProjectStatus,
+} from "@/lib/projects-data";
 import { apiClient } from "./client";
 
 export type ProjectsListResult = {
@@ -40,4 +47,30 @@ export async function updateProjectStatus(id: string, status: ProjectStatus): Pr
 
 export async function deleteProject(id: string): Promise<void> {
   await apiClient(`/api/admin/projects/${id}`, { method: "DELETE" });
+}
+
+export type CreateProjectInput = {
+  title: string;
+  summary: string;
+  focusArea: ProjectFocusArea;
+  tags: string[];
+  coverImageUrl: string | null;
+  body: string;
+  status: ProjectStatus;
+};
+
+export type CreateProjectResult = { project: Project; source: "api" | "mock"; error?: string };
+
+export async function createProject(input: CreateProjectInput): Promise<CreateProjectResult> {
+  try {
+    const project = await apiClient<Project>("/api/admin/projects", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+    return { project, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Projects API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[projects] Saving locally:", message);
+    return { project: createMockProject(input), source: "mock", error: message };
+  }
 }

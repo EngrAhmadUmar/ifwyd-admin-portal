@@ -5,27 +5,37 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { deleteProject, fetchProjects, updateProjectStatus } from "@/lib/api/projects";
 import { PROJECTS_PER_PAGE, type Project, type ProjectStatus } from "@/lib/projects-data";
 import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
-type PendingAction = { type: "publish" | "unpublish" | "delete"; id: string };
+type PendingAction = { type: "publish" | "unpublish" | "delete"; id: string; title: string };
 
-const MODAL_CONFIG: Record<PendingAction["type"], { title: string; description: string; confirmLabel: string }> = {
-  publish: {
-    title: "Publish Project",
-    description: "Publish this project? It will become visible on the public website.",
-    confirmLabel: "Publish",
-  },
-  unpublish: {
-    title: "Unpublish Project",
-    description: "Unpublish this project? It will be hidden from the public website.",
-    confirmLabel: "Unpublish",
-  },
-  delete: {
-    title: "Delete Project",
-    description: "This will permanently remove this project. This cannot be undone.",
-    confirmLabel: "Delete",
-  },
-};
+function getModalConfig(action: PendingAction) {
+  switch (action.type) {
+    case "publish":
+      return {
+        title: "Publish Project",
+        description: `Publish "${action.title}"? It will become visible on the public website.`,
+        confirmLabel: "Publish",
+        danger: false,
+      };
+    case "unpublish":
+      return {
+        title: "Unpublish Project",
+        description: `Unpublish "${action.title}"? It will be hidden from the public website.`,
+        confirmLabel: "Unpublish",
+        danger: false,
+      };
+    case "delete":
+      return {
+        title: "Delete this project?",
+        description: `"${action.title}" will be removed from the website. This action can't be undone.`,
+        confirmLabel: "Delete",
+        danger: true,
+      };
+  }
+}
 
 const STATUS_STYLES: Record<ProjectStatus, string> = {
   Published: "bg-[#E8F5E9] text-[#13BE00]",
@@ -100,7 +110,7 @@ export default function ProjectsPage() {
     setPendingAction(null);
   }
 
-  const modal = pendingAction ? MODAL_CONFIG[pendingAction.type] : null;
+  const modal = pendingAction ? getModalConfig(pendingAction) : null;
 
   return (
     <div className="flex mt-3 h-full min-h-0 flex-col">
@@ -111,11 +121,20 @@ export default function ProjectsPage() {
             Manage the projects and initiatives listed on the website.
           </p>
         </div>
-        {source === "mock" && loadError && (
-          <span className="max-w-[220px] shrink-0 text-right text-[10px] font-light text-neutral-500">
-            API error: {loadError}
-          </span>
-        )}
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <Link
+            href="/posts/new?type=project"
+            className="flex h-10 items-center gap-1.5 rounded-full bg-ifwyd-brand px-4 text-[14px] font-semibold text-white transition-colors hover:bg-ifwyd-brand-dark"
+          >
+            <Plus className="h-4 w-4" strokeWidth={2.5} />
+            New Project
+          </Link>
+          {source === "mock" && loadError && (
+            <span className="max-w-[220px] text-right text-[10px] font-light text-neutral-500">
+              API error: {loadError}
+            </span>
+          )}
+        </div>
       </div>
 
       {actionError && <p className="mt-2 text-[12px] font-medium text-red-600">{actionError}</p>}
@@ -149,9 +168,17 @@ export default function ProjectsPage() {
                   items={[
                     {
                       label: project.status === "Published" ? "Unpublish" : "Publish",
-                      onClick: () => setPendingAction({ type: project.status === "Published" ? "unpublish" : "publish", id: project.id }),
+                      onClick: () =>
+                        setPendingAction({
+                          type: project.status === "Published" ? "unpublish" : "publish",
+                          id: project.id,
+                          title: project.title,
+                        }),
                     },
-                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: project.id }) },
+                    {
+                      label: "Delete",
+                      onClick: () => setPendingAction({ type: "delete", id: project.id, title: project.title }),
+                    },
                   ]}
                 />
               </div>
@@ -193,6 +220,7 @@ export default function ProjectsPage() {
           description={modal.description}
           confirmLabel={modal.confirmLabel}
           cancelLabel="Cancel"
+          variant={modal.danger ? "danger" : "default"}
         />
       )}
     </div>

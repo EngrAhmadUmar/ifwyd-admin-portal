@@ -8,25 +8,33 @@ import type { SubmissionStatus } from "@/lib/volunteer-data";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
-type PendingAction = { type: "contacted" | "archive" | "delete"; id: string };
+type PendingAction = { type: "contacted" | "archive" | "delete"; id: string; title: string };
 
-const MODAL_CONFIG: Record<PendingAction["type"], { title: string; description: string; confirmLabel: string }> = {
-  contacted: {
-    title: "Mark as Contacted",
-    description: "Mark this registration as contacted?",
-    confirmLabel: "Mark Contacted",
-  },
-  archive: {
-    title: "Archive Registration",
-    description: "Archive this registration? It will be moved out of the active list.",
-    confirmLabel: "Archive",
-  },
-  delete: {
-    title: "Delete Registration",
-    description: "This will permanently remove this registration. This cannot be undone.",
-    confirmLabel: "Delete",
-  },
-};
+function getModalConfig(action: PendingAction) {
+  switch (action.type) {
+    case "contacted":
+      return {
+        title: "Mark as Contacted",
+        description: `Mark "${action.title}"'s registration as contacted?`,
+        confirmLabel: "Mark Contacted",
+        danger: false,
+      };
+    case "archive":
+      return {
+        title: "Archive Registration",
+        description: `Archive "${action.title}"'s registration? It will be moved out of the active list.`,
+        confirmLabel: "Archive",
+        danger: false,
+      };
+    case "delete":
+      return {
+        title: "Delete this registration?",
+        description: `"${action.title}"'s registration will be permanently removed. This action can't be undone.`,
+        confirmLabel: "Delete",
+        danger: true,
+      };
+  }
+}
 
 const STATUS_STYLES: Record<SubmissionStatus, string> = {
   New: "bg-[#E8F5E9] text-[#13BE00]",
@@ -102,7 +110,7 @@ export default function RegisterPage() {
     setPendingAction(null);
   }
 
-  const modal = pendingAction ? MODAL_CONFIG[pendingAction.type] : null;
+  const modal = pendingAction ? getModalConfig(pendingAction) : null;
 
   return (
     <div className="flex mt-3 h-full min-h-0 flex-col">
@@ -152,9 +160,9 @@ export default function RegisterPage() {
                 <ActionMenu
                   ariaLabel="Registration actions"
                   items={[
-                    { label: "Mark Contacted", onClick: () => setPendingAction({ type: "contacted", id: reg.id }) },
-                    { label: "Archive", onClick: () => setPendingAction({ type: "archive", id: reg.id }) },
-                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: reg.id }) },
+                    { label: "Mark Contacted", onClick: () => setPendingAction({ type: "contacted", id: reg.id, title: reg.name }) },
+                    { label: "Archive", onClick: () => setPendingAction({ type: "archive", id: reg.id, title: reg.name }) },
+                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: reg.id, title: reg.name }) },
                   ]}
                 />
               </div>
@@ -196,6 +204,7 @@ export default function RegisterPage() {
           description={modal.description}
           confirmLabel={modal.confirmLabel}
           cancelLabel="Cancel"
+          variant={modal.danger ? "danger" : "default"}
         />
       )}
     </div>

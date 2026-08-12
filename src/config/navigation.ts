@@ -1,14 +1,14 @@
 import {
   Briefcase,
   ClipboardList,
-  FolderKanban,
   GraduationCap,
   HandCoins,
   HeartHandshake,
   Home,
+  Image as ImageIcon,
   Mail,
-  Newspaper,
   Settings,
+  SquarePlus,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,8 +21,8 @@ export type NavItem = {
 
 export const mainNav: NavItem[] = [
   { label: "All Content", href: "/", icon: Home },
-  { label: "News", href: "/news", icon: Newspaper },
-  { label: "Projects", href: "/projects", icon: FolderKanban },
+  { label: "New Post", href: "/posts/new", icon: SquarePlus },
+  { label: "Media Library", href: "/media", icon: ImageIcon },
   { label: "Classrooms", href: "/classrooms", icon: GraduationCap },
   { label: "Career", href: "/career", icon: Briefcase },
   { label: "Volunteer Applications", href: "/volunteer", icon: HeartHandshake },

@@ -7,25 +7,33 @@ import { CAREER_PER_PAGE, type JobPosting, type JobStatus } from "@/lib/career-d
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
-type PendingAction = { type: "open" | "close" | "delete"; id: string };
+type PendingAction = { type: "open" | "close" | "delete"; id: string; title: string };
 
-const MODAL_CONFIG: Record<PendingAction["type"], { title: string; description: string; confirmLabel: string }> = {
-  open: {
-    title: "Reopen Posting",
-    description: "Reopen this job posting? It will accept applications again.",
-    confirmLabel: "Reopen",
-  },
-  close: {
-    title: "Close Posting",
-    description: "Close this job posting? It will stop accepting applications.",
-    confirmLabel: "Close",
-  },
-  delete: {
-    title: "Delete Posting",
-    description: "This will permanently remove this job posting. This cannot be undone.",
-    confirmLabel: "Delete",
-  },
-};
+function getModalConfig(action: PendingAction) {
+  switch (action.type) {
+    case "open":
+      return {
+        title: "Reopen Posting",
+        description: `Reopen "${action.title}"? It will accept applications again.`,
+        confirmLabel: "Reopen",
+        danger: false,
+      };
+    case "close":
+      return {
+        title: "Close Posting",
+        description: `Close "${action.title}"? It will stop accepting applications.`,
+        confirmLabel: "Close",
+        danger: false,
+      };
+    case "delete":
+      return {
+        title: "Delete this posting?",
+        description: `"${action.title}" will be removed from the website. This action can't be undone.`,
+        confirmLabel: "Delete",
+        danger: true,
+      };
+  }
+}
 
 const STATUS_STYLES: Record<JobStatus, string> = {
   Open: "bg-[#E8F5E9] text-[#13BE00]",
@@ -100,7 +108,7 @@ export default function CareerPage() {
     setPendingAction(null);
   }
 
-  const modal = pendingAction ? MODAL_CONFIG[pendingAction.type] : null;
+  const modal = pendingAction ? getModalConfig(pendingAction) : null;
 
   return (
     <div className="flex mt-3 h-full min-h-0 flex-col">
@@ -149,9 +157,10 @@ export default function CareerPage() {
                   items={[
                     {
                       label: job.status === "Open" ? "Close" : "Reopen",
-                      onClick: () => setPendingAction({ type: job.status === "Open" ? "close" : "open", id: job.id }),
+                      onClick: () =>
+                        setPendingAction({ type: job.status === "Open" ? "close" : "open", id: job.id, title: job.title }),
                     },
-                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: job.id }) },
+                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: job.id, title: job.title }) },
                   ]}
                 />
               </div>
@@ -193,6 +202,7 @@ export default function CareerPage() {
           description={modal.description}
           confirmLabel={modal.confirmLabel}
           cancelLabel="Cancel"
+          variant={modal.danger ? "danger" : "default"}
         />
       )}
     </div>

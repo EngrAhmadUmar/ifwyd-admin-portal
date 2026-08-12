@@ -8,9 +8,44 @@ export type NewsPost = {
   author: string;
   publishedDate: string;
   status: NewsStatus;
+  tags?: string[];
+  coverImageUrl?: string | null;
+  body?: string;
 };
 
 export const NEWS_PER_PAGE = 10;
+
+export const NEWS_CATEGORIES = ["Advocacy", "Campaign", "Programs", "Health", "Reports", "Community"] as const;
+
+function formatToday(): string {
+  return new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+/** Adds a post to the in-memory mock list (dev-only, no backend yet). */
+export function createMockNewsPost(input: {
+  title: string;
+  excerpt: string;
+  category: string;
+  tags: string[];
+  coverImageUrl: string | null;
+  body: string;
+  status: NewsStatus;
+}): NewsPost {
+  const post: NewsPost = {
+    id: `local-${Date.now()}`,
+    title: input.title,
+    excerpt: input.excerpt,
+    category: input.category,
+    author: "Admin",
+    publishedDate: formatToday(),
+    status: input.status,
+    tags: input.tags,
+    coverImageUrl: input.coverImageUrl,
+    body: input.body,
+  };
+  mockNews.unshift(post);
+  return post;
+}
 
 export const mockNews: NewsPost[] = [
   { id: "1", title: "Stakeholders task media on domestication of VAPP bill", excerpt: "Media practitioners called on to champion advocacy for the VAPP bill across states.", category: "Advocacy", author: "Comms Team", publishedDate: "Jul 28, 2026", status: "Published" },

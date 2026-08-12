@@ -152,7 +152,7 @@ export function DashboardPageClient() {
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
           <Link
-            href="/news"
+            href="/posts/new"
             className="flex h-10 items-center gap-1.5 rounded-full bg-ifwyd-brand px-4 text-[14px] font-semibold text-white transition-colors hover:bg-ifwyd-brand-dark"
           >
             <Plus className="h-4 w-4" strokeWidth={2.5} />
@@ -215,10 +215,11 @@ export function DashboardPageClient() {
         open={pendingDelete !== null}
         onClose={() => setPendingDelete(null)}
         onConfirm={handleConfirmDelete}
-        title="Delete Content"
-        description={`This will permanently remove "${pendingDelete?.title ?? ""}" from the website. This cannot be undone.`}
+        title="Delete this post?"
+        description={`"${pendingDelete?.title ?? ""}" will be removed from the website. This action can't be undone.`}
         confirmLabel="Delete"
         cancelLabel="Cancel"
+        variant="danger"
       />
     </div>
   );

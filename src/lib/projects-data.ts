@@ -1,16 +1,60 @@
 export type ProjectStatus = "Draft" | "Published";
+export type ProjectFocusArea = "Education" | "Protection" | "Women" | "Youth";
 
 export type Project = {
   id: string;
   title: string;
   slug: string;
   summary: string;
-  focusArea: "Education" | "Protection" | "Women" | "Youth";
+  focusArea: ProjectFocusArea;
   status: ProjectStatus;
   updatedDate: string;
+  tags?: string[];
+  coverImageUrl?: string | null;
+  body?: string;
 };
 
 export const PROJECTS_PER_PAGE = 10;
+
+export const PROJECT_FOCUS_AREAS: ProjectFocusArea[] = ["Education", "Protection", "Women", "Youth"];
+
+function formatToday(): string {
+  return new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function slugify(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+/** Adds a project to the in-memory mock list (dev-only, no backend yet). */
+export function createMockProject(input: {
+  title: string;
+  summary: string;
+  focusArea: ProjectFocusArea;
+  tags: string[];
+  coverImageUrl: string | null;
+  body: string;
+  status: ProjectStatus;
+}): Project {
+  const project: Project = {
+    id: `local-${Date.now()}`,
+    title: input.title,
+    slug: slugify(input.title),
+    summary: input.summary,
+    focusArea: input.focusArea,
+    status: input.status,
+    updatedDate: formatToday(),
+    tags: input.tags,
+    coverImageUrl: input.coverImageUrl,
+    body: input.body,
+  };
+  mockProjects.unshift(project);
+  return project;
+}
 
 export const mockProjects: Project[] = [
   { id: "1", title: "16 Days of Activism", slug: "16-days-of-activism", summary: "Annual campaign against gender-based violence across host communities.", focusArea: "Protection", status: "Published", updatedDate: "Jul 15, 2026" },

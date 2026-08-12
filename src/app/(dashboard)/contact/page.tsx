@@ -7,25 +7,33 @@ import { CONTACT_PER_PAGE, type ContactMessage, type MessageStatus } from "@/lib
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
-type PendingAction = { type: "read" | "replied" | "delete"; id: string };
+type PendingAction = { type: "read" | "replied" | "delete"; id: string; title: string };
 
-const MODAL_CONFIG: Record<PendingAction["type"], { title: string; description: string; confirmLabel: string }> = {
-  read: {
-    title: "Mark as Read",
-    description: "Mark this message as read?",
-    confirmLabel: "Mark Read",
-  },
-  replied: {
-    title: "Mark as Replied",
-    description: "Mark this message as replied? This confirms a reply was sent outside the portal.",
-    confirmLabel: "Mark Replied",
-  },
-  delete: {
-    title: "Delete Message",
-    description: "This will permanently remove this message. This cannot be undone.",
-    confirmLabel: "Delete",
-  },
-};
+function getModalConfig(action: PendingAction) {
+  switch (action.type) {
+    case "read":
+      return {
+        title: "Mark as Read",
+        description: `Mark the message from "${action.title}" as read?`,
+        confirmLabel: "Mark Read",
+        danger: false,
+      };
+    case "replied":
+      return {
+        title: "Mark as Replied",
+        description: `Mark the message from "${action.title}" as replied? This confirms a reply was sent outside the portal.`,
+        confirmLabel: "Mark Replied",
+        danger: false,
+      };
+    case "delete":
+      return {
+        title: "Delete this message?",
+        description: `The message from "${action.title}" will be permanently removed. This action can't be undone.`,
+        confirmLabel: "Delete",
+        danger: true,
+      };
+  }
+}
 
 const STATUS_STYLES: Record<MessageStatus, string> = {
   Unread: "bg-[#E8F5E9] text-[#13BE00]",
@@ -101,7 +109,7 @@ export default function ContactPage() {
     setPendingAction(null);
   }
 
-  const modal = pendingAction ? MODAL_CONFIG[pendingAction.type] : null;
+  const modal = pendingAction ? getModalConfig(pendingAction) : null;
 
   return (
     <div className="flex mt-3 h-full min-h-0 flex-col">
@@ -148,9 +156,9 @@ export default function ContactPage() {
                 <ActionMenu
                   ariaLabel="Message actions"
                   items={[
-                    { label: "Mark Read", onClick: () => setPendingAction({ type: "read", id: msg.id }) },
-                    { label: "Mark Replied", onClick: () => setPendingAction({ type: "replied", id: msg.id }) },
-                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: msg.id }) },
+                    { label: "Mark Read", onClick: () => setPendingAction({ type: "read", id: msg.id, title: msg.name }) },
+                    { label: "Mark Replied", onClick: () => setPendingAction({ type: "replied", id: msg.id, title: msg.name }) },
+                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: msg.id, title: msg.name }) },
                   ]}
                 />
               </div>
@@ -192,6 +200,7 @@ export default function ContactPage() {
           description={modal.description}
           confirmLabel={modal.confirmLabel}
           cancelLabel="Cancel"
+          variant={modal.danger ? "danger" : "default"}
         />
       )}
     </div>

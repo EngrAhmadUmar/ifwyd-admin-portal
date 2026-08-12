@@ -5,27 +5,37 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { deleteNews, fetchNews, updateNewsStatus } from "@/lib/api/news";
 import { NEWS_PER_PAGE, type NewsPost, type NewsStatus } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
-type PendingAction = { type: "publish" | "unpublish" | "delete"; id: string };
+type PendingAction = { type: "publish" | "unpublish" | "delete"; id: string; title: string };
 
-const MODAL_CONFIG: Record<PendingAction["type"], { title: string; description: string; confirmLabel: string }> = {
-  publish: {
-    title: "Publish Post",
-    description: "Publish this post? It will become visible on the public website.",
-    confirmLabel: "Publish",
-  },
-  unpublish: {
-    title: "Unpublish Post",
-    description: "Unpublish this post? It will be hidden from the public website.",
-    confirmLabel: "Unpublish",
-  },
-  delete: {
-    title: "Delete Post",
-    description: "This will permanently remove this news post. This cannot be undone.",
-    confirmLabel: "Delete",
-  },
-};
+function getModalConfig(action: PendingAction) {
+  switch (action.type) {
+    case "publish":
+      return {
+        title: "Publish Post",
+        description: `Publish "${action.title}"? It will become visible on the public website.`,
+        confirmLabel: "Publish",
+        danger: false,
+      };
+    case "unpublish":
+      return {
+        title: "Unpublish Post",
+        description: `Unpublish "${action.title}"? It will be hidden from the public website.`,
+        confirmLabel: "Unpublish",
+        danger: false,
+      };
+    case "delete":
+      return {
+        title: "Delete this post?",
+        description: `"${action.title}" will be removed from the website. This action can't be undone.`,
+        confirmLabel: "Delete",
+        danger: true,
+      };
+  }
+}
 
 const STATUS_STYLES: Record<NewsStatus, string> = {
   Published: "bg-[#E8F5E9] text-[#13BE00]",
@@ -100,7 +110,7 @@ export default function NewsPage() {
     setPendingAction(null);
   }
 
-  const modal = pendingAction ? MODAL_CONFIG[pendingAction.type] : null;
+  const modal = pendingAction ? getModalConfig(pendingAction) : null;
 
   return (
     <div className="flex mt-3 h-full min-h-0 flex-col">
@@ -111,11 +121,20 @@ export default function NewsPage() {
             Create, publish, and manage news posts shown on the website.
           </p>
         </div>
-        {source === "mock" && loadError && (
-          <span className="max-w-[220px] shrink-0 text-right text-[10px] font-light text-neutral-500">
-            API error: {loadError}
-          </span>
-        )}
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <Link
+            href="/posts/new"
+            className="flex h-10 items-center gap-1.5 rounded-full bg-ifwyd-brand px-4 text-[14px] font-semibold text-white transition-colors hover:bg-ifwyd-brand-dark"
+          >
+            <Plus className="h-4 w-4" strokeWidth={2.5} />
+            New Post
+          </Link>
+          {source === "mock" && loadError && (
+            <span className="max-w-[220px] text-right text-[10px] font-light text-neutral-500">
+              API error: {loadError}
+            </span>
+          )}
+        </div>
       </div>
 
       {actionError && <p className="mt-2 text-[12px] font-medium text-red-600">{actionError}</p>}
@@ -149,9 +168,14 @@ export default function NewsPage() {
                   items={[
                     {
                       label: post.status === "Published" ? "Unpublish" : "Publish",
-                      onClick: () => setPendingAction({ type: post.status === "Published" ? "unpublish" : "publish", id: post.id }),
+                      onClick: () =>
+                        setPendingAction({
+                          type: post.status === "Published" ? "unpublish" : "publish",
+                          id: post.id,
+                          title: post.title,
+                        }),
                     },
-                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: post.id }) },
+                    { label: "Delete", onClick: () => setPendingAction({ type: "delete", id: post.id, title: post.title }) },
                   ]}
                 />
               </div>
@@ -193,6 +217,7 @@ export default function NewsPage() {
           description={modal.description}
           confirmLabel={modal.confirmLabel}
           cancelLabel="Cancel"
+          variant={modal.danger ? "danger" : "default"}
         />
       )}
     </div>
