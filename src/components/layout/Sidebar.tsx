@@ -1,12 +1,13 @@
 "use client";
 
-import { Logo } from "@/components/icons/Logo";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { assets } from "@/config/assets";
 import { mainNav, type NavItem } from "@/config/navigation";
 import { APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -47,12 +48,15 @@ export function Sidebar() {
   return (
     <>
       <aside className="flex h-screen w-[280px] shrink-0 flex-col overflow-hidden border-r border-neutral-200/80 bg-white px-3 py-6">
-        <div className="mb-6 flex items-center gap-2.5 px-2">
-          <Logo className="h-10 w-auto shrink-0" priority />
-          <div className="min-w-0">
-            <p className="truncate text-[14px] font-bold leading-tight text-ifwyd-brand">Ikra Foundation</p>
-            <p className="truncate text-[10px] leading-tight text-neutral-500">for Women &amp; Youth Development</p>
-          </div>
+        <div className="mb-6 px-2">
+          <Image
+            src={assets.logoHorizontal}
+            alt="Ikra Foundation for Women & Youth Development"
+            width={812}
+            height={124}
+            priority
+            className="h-auto w-full"
+          />
         </div>
 
         <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pr-1">

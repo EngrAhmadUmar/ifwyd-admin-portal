@@ -7,4 +7,5 @@ export function assetPath(filename: string): string {
 
 export const assets = {
   logo: assetPath("logo.png"),
+  logoHorizontal: assetPath("logo1.png"),
 } as const;
