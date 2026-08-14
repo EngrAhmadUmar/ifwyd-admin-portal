@@ -20,16 +20,16 @@ function NavLink({ href, label, icon: Icon, badge }: NavItem & { badge?: number 
     <Link
       href={href}
       className={cn(
-        "relative flex h-[52px] w-full items-center gap-3 overflow-hidden rounded-2xl px-4 text-[15px] font-medium transition-colors",
-        isActive ? "bg-[#FBEAF3] text-ifwyd-brand" : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900",
+        "relative flex h-[52px] w-full items-center gap-3 overflow-hidden rounded-[10px] px-4 text-[13px] font-medium transition-colors",
+        isActive ? "bg-[#D54B9C0D] text-ifwyd-brand" : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900",
       )}
     >
-      <Icon className="h-5 w-5 shrink-0" strokeWidth={2} />
+      <Icon className="h-[21px] w-[21px] shrink-0" strokeWidth={2} />
       <span className="flex-1 truncate">{label}</span>
       {badge !== undefined && (
-        <span className="rounded-full bg-ifwyd-brand px-2 py-0.5 text-[11px] font-semibold text-white">{badge}</span>
+        <span className="rounded-[10px] bg-ifwyd-brand px-2 py-0.5 text-[13px] font-medium text-white">{badge}</span>
       )}
-      {isActive && <span className="absolute inset-y-0 right-0 w-[7px] rounded-full bg-ifwyd-brand" />}
+      {isActive && <span className="absolute inset-y-0 right-0 w-[6px] rounded-[10px] bg-ifwyd-brand" />}
     </Link>
   );
 }
@@ -47,15 +47,15 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="flex h-screen w-[280px] shrink-0 flex-col overflow-hidden border-r border-neutral-200/80 bg-white px-3 py-6">
+      <aside className="flex h-screen w-[291px] shrink-0 flex-col overflow-hidden border-r border-neutral-200/80 bg-white px-3 py-6">
         <div className="mb-6 px-2">
           <Image
             src={assets.logoHorizontal}
             alt="Ikra Foundation for Women & Youth Development"
-            width={812}
-            height={124}
+            width={203}
+            height={31}
             priority
-            className="h-auto w-full"
+            className="block"
           />
         </div>
 

@@ -6,7 +6,7 @@ import { deleteNews } from "@/lib/api/news";
 import { deleteProject } from "@/lib/api/projects";
 import type { ContentItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Pencil, Plus, PlusIcon, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { StatCard } from "./StatCard";
@@ -26,7 +26,7 @@ function Tag({ tone, children }: { tone: "type" | "published" | "draft" | "neutr
   };
 
   return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium", styles[tone])}>
+    <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium", styles[tone])}>
       <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", dot[tone])} />
       {children}
     </span>
@@ -42,32 +42,32 @@ function ContentRow({ item, onDelete }: { item: ContentItem; onDelete: () => voi
       <img
         src={item.thumbnail}
         alt=""
-        className="h-14 w-14 shrink-0 rounded-xl object-cover"
+        className="h-[80px] w-[122px] shrink-0 rounded-xl object-cover"
       />
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[15px] font-semibold text-neutral-900">{item.title}</p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+        <p className="truncate text-[16px] font-semibold text-neutral-900">{item.title}</p>
+        <div className="mt-1.5 flex flex-wrap items-center gap-3">
           <Tag tone="type">{item.type}</Tag>
           <Tag tone={item.status === "Published" ? "published" : "draft"}>{item.status}</Tag>
           <Tag tone="neutral">{item.category}</Tag>
         </div>
       </div>
 
-      <span className="shrink-0 text-[13px] text-neutral-500">{item.date}</span>
+      <span className="shrink-0 text-[12px] text-neutral-500 font-light">{item.date}</span>
 
       <div className="flex shrink-0 items-center gap-1">
         <button
           type="button"
           onClick={onDelete}
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-red-50 hover:text-red-600"
+          className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-red-50 hover:text-red-600"
           aria-label={`Delete ${item.title}`}
         >
           <Trash2 className="h-4 w-4" strokeWidth={2} />
         </button>
         <Link
           href={editHref}
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-ifwyd-brand transition-colors hover:bg-ifwyd-brand/10 hover:text-ifwyd-brand-dark"
+          className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-ifwyd-brand/10 hover:text-ifwyd-brand-dark"
           aria-label={`Edit ${item.title}`}
         >
           <Pencil className="h-4 w-4" strokeWidth={2} />
@@ -146,16 +146,16 @@ export function DashboardPageClient() {
       <div className="flex shrink-0 items-start justify-between gap-3">
         <div>
           <h1 className="text-[22px] font-semibold text-neutral-900">All Content</h1>
-          <p className="mt-1 text-[15px] font-normal text-black">
+          <p className="mt-1 text-[15px] font-regular text-black">
             Projects and news published on the IFWYD website, in one place.
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
           <Link
             href="/posts/new"
-            className="flex h-10 items-center gap-1.5 rounded-full bg-ifwyd-brand px-4 text-[14px] font-semibold text-white transition-colors hover:bg-ifwyd-brand-dark"
+            className="flex h-10 items-center gap-1.5 rounded-full bg-ifwyd-brand px-4 text-[12px] font-medium text-white transition-colors hover:bg-ifwyd-brand-dark"
           >
-            <Plus className="h-4 w-4" strokeWidth={2.5} />
+            <PlusIcon className="h-[18px] w-[18px] shrink-0" strokeWidth={2} />
             New Post
           </Link>
           {source === "mock" && loadError && (
@@ -174,7 +174,7 @@ export function DashboardPageClient() {
         </div>
       ) : (
         <>
-          <div className="grid shrink-0 grid-cols-[1.3fr_1fr_1fr_1fr] gap-4">
+          <div className="grid shrink-0 grid-cols-[1fr_1fr_1fr_1fr] gap-4">
             {data.stats.map((stat) => (
               <StatCard
                 key={stat.key}
@@ -188,14 +188,14 @@ export function DashboardPageClient() {
 
           <div className="relative shrink-0">
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
-              <Search className="h-4 w-4" strokeWidth={2} />
+              <Search className="h-4 w-4 " strokeWidth={2} />
             </span>
             <input
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search Posts..."
-              className="h-12 w-full rounded-full border border-neutral-200/80 bg-white pl-11 pr-4 text-[13px] text-neutral-900 outline-none placeholder:text-neutral-400 focus:ring-2 focus:ring-ifwyd-brand/20"
+              className="h-12 w-full rounded-full border border-neutral-200/80 bg-white pl-11 pr-4 text-[11px] text-neutral-900 outline-none placeholder:text-neutral-400 "
             />
           </div>
 
