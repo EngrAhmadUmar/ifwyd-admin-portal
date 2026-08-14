@@ -2,15 +2,14 @@
 
 import { Logo } from "@/components/icons/Logo";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
-import { footerNav, mainNav, type NavItem } from "@/config/navigation";
+import { mainNav, type NavItem } from "@/config/navigation";
 import { APP_NAME } from "@/lib/constants";
-import { badgeForHref, fetchNavBadges, type NavBadges } from "@/lib/api/nav-badges";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function NavLink({ href, label, icon: Icon, badge }: NavItem & { badge?: number }) {
   const pathname = usePathname();
@@ -36,20 +35,8 @@ function NavLink({ href, label, icon: Icon, badge }: NavItem & { badge?: number 
 
 export function Sidebar() {
   const router = useRouter();
-  const pathname = usePathname();
   const { logout } = useAuth();
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const [badges, setBadges] = useState<NavBadges | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchNavBadges().then((result) => {
-      if (!cancelled) setBadges(result.badges);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [pathname]);
 
   async function handleLogoutConfirm() {
     setLogoutOpen(false);
@@ -70,12 +57,6 @@ export function Sidebar() {
 
         <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pr-1">
           {mainNav.map((item) => (
-            <NavLink key={item.href} {...item} badge={badgeForHref(item.href, badges)} />
-          ))}
-
-          <div className="my-2 h-px bg-neutral-200/80" />
-
-          {footerNav.map((item) => (
             <NavLink key={item.href} {...item} />
           ))}
         </nav>
@@ -91,7 +72,7 @@ export function Sidebar() {
           <button
             type="button"
             onClick={() => setLogoutOpen(true)}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ifwyd-brand transition-colors hover:bg-ifwyd-brand/10 hover:text-ifwyd-brand-dark"
             aria-label="Sign out"
           >
             <LogOut className="h-4 w-4" strokeWidth={2} />

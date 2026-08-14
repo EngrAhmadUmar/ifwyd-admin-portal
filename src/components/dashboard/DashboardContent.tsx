@@ -67,7 +67,7 @@ function ContentRow({ item, onDelete }: { item: ContentItem; onDelete: () => voi
         </button>
         <Link
           href={editHref}
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-ifwyd-brand transition-colors hover:bg-ifwyd-brand/10 hover:text-ifwyd-brand-dark"
           aria-label={`Edit ${item.title}`}
         >
           <Pencil className="h-4 w-4" strokeWidth={2} />

@@ -73,7 +73,7 @@ export function ConfirmModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ifwyd-brand transition-colors hover:bg-ifwyd-brand/10 hover:text-ifwyd-brand-dark"
             aria-label="Close"
           >
             <X className="h-4 w-4" strokeWidth={2} />

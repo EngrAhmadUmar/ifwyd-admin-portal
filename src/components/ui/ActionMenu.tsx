@@ -38,11 +38,11 @@ export function ActionMenu({ items, ariaLabel = "Actions", className }: ActionMe
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-neutral-100"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-ifwyd-brand transition-colors hover:bg-ifwyd-brand/10"
         aria-label={ariaLabel}
         aria-expanded={open}
       >
-        <MoreVertical className="h-4 w-4 text-neutral-900" />
+        <MoreVertical className="h-4 w-4" />
       </button>
 
       {open && (
