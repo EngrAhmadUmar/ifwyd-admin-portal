@@ -66,9 +66,9 @@ export default function MediaLibraryPage() {
             <p className="text-[13px]">No images yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid grid-cols-[repeat(auto-fill,256px)] gap-5">
             {items.map((item) => (
-              <div key={item.id} className="group relative aspect-square overflow-hidden rounded-2xl">
+              <div key={item.id} className="group relative h-[158px] w-[256px] overflow-hidden rounded-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={item.url} alt="" className="h-full w-full object-cover" />
                 <button
