@@ -94,21 +94,21 @@ export function NewPostForm() {
     <div className="flex mt-3 h-full min-h-0 flex-col overflow-hidden">
       <div className="shrink-0">
         <h1 className="text-[22px] font-semibold text-neutral-900">New Post</h1>
-        <p className="mt-1 text-[15px] font-normal text-black">Write, preview, and publish to the IFWYD website.</p>
+        <p className="mt-1 text-[15px] font-regular text-black">Write, preview, and publish to the IFWYD website.</p>
       </div>
 
       {formError && <p className="mt-2 shrink-0 text-[12px] font-medium text-red-600">{formError}</p>}
 
-      <div className="mt-5 grid min-h-0 flex-1 grid-cols-[1fr_320px] items-start gap-5 overflow-hidden">
+      <div className="mt-5 grid min-h-0 flex-1 grid-cols-[1fr_400px] items-start gap-5 overflow-hidden">
         <div className="flex min-h-0 flex-col overflow-y-auto rounded-[10px] border border-neutral-200/80 bg-white p-6 shadow-sm">
           <label className="block">
-            <span className="mb-2 block text-[13px] font-medium text-neutral-900">Post Type</span>
-            <div className="grid grid-cols-2 gap-1 rounded-full bg-neutral-100 p-1">
+            <span className="mb-2 block text-[12px] font-medium text-neutral-900">Post Type</span>
+            <div className="grid grid-cols-2 gap-1 rounded-[10px] bg-neutral-100 p-1">
               <button
                 type="button"
                 onClick={() => handleTypeChange("News")}
                 className={cn(
-                  "h-9 rounded-full text-[13px] font-semibold transition-colors",
+                  "h-9 rounded-[10px] text-[12px] font-medium transition-colors",
                   postType === "News" ? "bg-ifwyd-brand text-white" : "text-neutral-500 hover:text-neutral-800",
                 )}
               >
@@ -118,7 +118,7 @@ export function NewPostForm() {
                 type="button"
                 onClick={() => handleTypeChange("Projects")}
                 className={cn(
-                  "h-9 rounded-full text-[13px] font-semibold transition-colors",
+                  "h-9 rounded-[10px] text-[12px] font-medium transition-colors",
                   postType === "Projects" ? "bg-ifwyd-brand text-white" : "text-neutral-500 hover:text-neutral-800",
                 )}
               >
@@ -128,23 +128,23 @@ export function NewPostForm() {
           </label>
 
           <label className="mt-5 block">
-            <span className="mb-2 block text-[13px] font-medium text-neutral-900">Title</span>
+            <span className="mb-2 block text-[12px] font-medium text-neutral-900">Title</span>
             <input
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="e.g stand rally against antiviolence"
-              className="h-[47px] w-full rounded-[10px] bg-[#F5F5F5] px-4 text-[14px] font-normal text-neutral-900 outline-none focus:ring-2 focus:ring-ifwyd-brand/20"
+              className="h-[47px] w-full rounded-[10px] bg-[#F5F5F5] px-4 text-[12px] font-light text-neutral-900 outline-none focus:ring-2 focus:ring-ifwyd-brand/20"
             />
           </label>
 
           <div className="mt-5 grid grid-cols-2 gap-4">
             <label className="block">
-              <span className="mb-2 block text-[13px] font-medium text-neutral-900">Category</span>
+              <span className="mb-2 block text-[12px] font-medium text-neutral-900">Category</span>
               <select
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
-                className="h-[47px] w-full appearance-none rounded-[10px] bg-[#F5F5F5] px-4 text-[14px] font-normal text-neutral-900 outline-none focus:ring-2 focus:ring-ifwyd-brand/20"
+                className="h-[47px] w-full appearance-none rounded-[10px] bg-[#F5F5F5] px-4 text-[12px] font-light text-neutral-900 outline-none focus:ring-2 focus:ring-ifwyd-brand/20"
               >
                 {categoryOptions.map((option) => (
                   <option key={option} value={option}>
@@ -155,26 +155,26 @@ export function NewPostForm() {
             </label>
 
             <label className="block">
-              <span className="mb-2 block text-[13px] font-medium text-neutral-900">Tags (comma separated)</span>
+              <span className="mb-2 block text-[12px] font-medium text-neutral-900">Tags (comma separated)</span>
               <input
                 type="text"
                 value={tagsInput}
                 onChange={(event) => setTagsInput(event.target.value)}
                 placeholder="Bauchi, women"
-                className="h-[47px] w-full rounded-[10px] bg-[#F5F5F5] px-4 text-[14px] font-normal text-neutral-900 outline-none focus:ring-2 focus:ring-ifwyd-brand/20"
+                className="h-[47px] w-full rounded-[10px] bg-[#F5F5F5] px-4 text-[12px] font-light text-neutral-900 outline-none focus:ring-2 focus:ring-ifwyd-brand/20"
               />
             </label>
           </div>
 
           <div className="mt-5">
-            <span className="mb-2 block text-[13px] font-medium text-neutral-900">Cover Image</span>
+            <span className="mb-2 block text-[12px] font-medium text-neutral-900">Cover Image</span>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               className="flex h-[100px] w-full flex-col items-center justify-center gap-1.5 rounded-[10px] border border-dashed border-ifwyd-brand/40 bg-ifwyd-brand/5 text-neutral-500 transition-colors hover:bg-ifwyd-brand/10"
             >
               {coverImageUrl ? (
-                <span className="flex items-center gap-2 text-[13px] text-neutral-700">
+                <span className="flex items-center gap-2 text-[12px] text-neutral-700">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={coverImageUrl} alt="" className="h-14 w-14 rounded-lg object-cover" />
                   {coverImageName}
@@ -182,7 +182,7 @@ export function NewPostForm() {
               ) : (
                 <>
                   <ImagePlus className="h-5 w-5" strokeWidth={1.5} />
-                  <span className="text-[13px]">Click to upload a cover image</span>
+                  <span className="text-[12px]">Click to upload a cover image</span>
                 </>
               )}
             </button>
@@ -196,7 +196,7 @@ export function NewPostForm() {
           </div>
 
           <div className="mt-5 flex min-h-[220px] flex-1 flex-col">
-            <span className="mb-2 block text-[13px] font-medium text-neutral-900">Body</span>
+            <span className="mb-2 block text-[12px] font-medium text-neutral-900">Body</span>
             <ContentEditor content={body} onChange={setBody} className="flex-1" />
           </div>
 
@@ -205,7 +205,7 @@ export function NewPostForm() {
               type="button"
               onClick={() => handleSubmit("Published")}
               disabled={saving !== null}
-              className="h-12 rounded-full bg-ifwyd-brand px-6 text-[14px] font-semibold text-white transition-colors hover:bg-ifwyd-brand-dark disabled:opacity-60"
+              className="h-12 rounded-full bg-ifwyd-brand px-10 text-[14px] font-medium text-white transition-colors hover:bg-ifwyd-brand-dark disabled:opacity-60"
             >
               {saving === "publish" ? "Publishing..." : "Publish"}
             </button>
@@ -213,7 +213,7 @@ export function NewPostForm() {
               type="button"
               onClick={() => handleSubmit("Draft")}
               disabled={saving !== null}
-              className="h-12 rounded-full border border-neutral-300 bg-white px-6 text-[14px] font-semibold text-neutral-900 transition-colors hover:bg-neutral-50 disabled:opacity-60"
+              className="h-12 rounded-full border border-neutral-300 bg-white px-6 text-[14px] font-medium text-neutral-900 transition-colors hover:bg-neutral-50 disabled:opacity-60"
             >
               {saving === "draft" ? "Saving..." : "Save as Draft"}
             </button>
@@ -233,11 +233,11 @@ export function NewPostForm() {
             )}
           </div>
 
-          <p className="mt-3 text-[12px] font-medium text-ifwyd-brand">{category}</p>
-          <p className={cn("mt-1 text-[15px] font-semibold", title ? "text-neutral-900" : "text-neutral-400")}>
+          <p className="mt-3 text-[12px] font-regular text-ifwyd-brand">{category}</p>
+          <p className={cn("mt-1 text-[14px] font-medium", title ? "text-neutral-900" : "text-neutral-400")}>
             {title || "Your post title appears here"}
           </p>
-          <p className="mt-1.5 text-[12px] leading-relaxed text-neutral-500">
+          <p className="mt-1.5 text-[11px] font-light leading-relaxed text-neutral-500">
             {excerptPreview ||
               "Start typing the body and the excerpt will preview here exactly as readers will see it on the IFWYD website."}
           </p>

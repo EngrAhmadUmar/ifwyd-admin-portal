@@ -6,7 +6,7 @@ import { deleteNews } from "@/lib/api/news";
 import { deleteProject } from "@/lib/api/projects";
 import type { ContentItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
-import { Pencil, Plus, PlusIcon, Search, Trash2 } from "lucide-react";
+import { Pencil, PlusIcon, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { StatCard } from "./StatCard";
