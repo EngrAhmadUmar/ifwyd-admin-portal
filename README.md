@@ -2,7 +2,6 @@
 
 Admin portal for the [IFWYD website](https://github.com/EngrAhmadUmar/ifwyd-website) (Ikra Foundation for Women & Youth Development). Lets staff manage news, projects, classrooms, careers, and form submissions without touching code.
 
-Built with the same stack and coding conventions as [alpha-rides-admin-portal](https://github.com/EngrAhmadUmar/alpha-rides-admin-portal): Next.js App Router, TypeScript, Tailwind, and a thin API layer that gracefully falls back to mock data whenever the backend isn't reachable.
 
 ## Setup
 
