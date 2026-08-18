@@ -10,7 +10,7 @@ export type Project = {
   status: ProjectStatus;
   updatedDate: string;
   tags?: string[];
-  coverImageUrl?: string | null;
+  thumbnailUrl?: string | null;
   body?: string;
 };
 
@@ -36,7 +36,7 @@ export function createMockProject(input: {
   summary: string;
   focusArea: ProjectFocusArea;
   tags: string[];
-  coverImageUrl: string | null;
+  thumbnailUrl: string | null;
   body: string;
   status: ProjectStatus;
 }): Project {
@@ -49,10 +49,32 @@ export function createMockProject(input: {
     status: input.status,
     updatedDate: formatToday(),
     tags: input.tags,
-    coverImageUrl: input.coverImageUrl,
+    thumbnailUrl: input.thumbnailUrl,
     body: input.body,
   };
   mockProjects.unshift(project);
+  return project;
+}
+
+export function getMockProject(id: string): Project | null {
+  return mockProjects.find((project) => project.id === id) ?? null;
+}
+
+export function updateMockProject(
+  id: string,
+  patch: Partial<{
+    title: string;
+    summary: string;
+    focusArea: ProjectFocusArea;
+    tags: string[];
+    thumbnailUrl: string | null;
+    body: string;
+    status: ProjectStatus;
+  }>,
+): Project | null {
+  const project = getMockProject(id);
+  if (!project) return null;
+  Object.assign(project, patch);
   return project;
 }
 

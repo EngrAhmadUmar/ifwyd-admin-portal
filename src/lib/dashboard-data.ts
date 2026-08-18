@@ -32,7 +32,7 @@ function newsToContentItem(post: NewsPost): ContentItem {
     category: post.category,
     status: post.status,
     date: post.publishedDate,
-    thumbnail: `https://picsum.photos/seed/ifwyd-news-${post.id}/160/160`,
+    thumbnail: post.thumbnailUrl || `https://picsum.photos/seed/ifwyd-news-${post.id}/160/160`,
   };
 }
 
@@ -45,7 +45,7 @@ function projectToContentItem(project: Project): ContentItem {
     category: project.focusArea,
     status: project.status,
     date: project.updatedDate,
-    thumbnail: `https://picsum.photos/seed/ifwyd-project-${project.id}/160/160`,
+    thumbnail: project.thumbnailUrl || `https://picsum.photos/seed/ifwyd-project-${project.id}/160/160`,
   };
 }
 
@@ -63,8 +63,8 @@ export function getContentStats(items: ContentItem[]): ContentStat[] {
 
   return [
     { key: "published", label: "Published & Live", value: published, highlight: true },
-    { key: "projects", label: "Projects", value: projects, change: "+2" },
-    { key: "posts", label: "New Posts", value: posts, change: "+1" },
+    { key: "projects", label: "Projects", value: projects },
+    { key: "posts", label: "New Posts", value: posts },
     { key: "drafts", label: "Drafts & Scheduled", value: drafts },
   ];
 }

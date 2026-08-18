@@ -1,4 +1,12 @@
-import { mockClassrooms, CLASSROOMS_PER_PAGE, type Classroom, type ClassroomStatus } from "@/lib/classrooms-data";
+import {
+  createMockClassroom,
+  getMockClassroom,
+  mockClassrooms,
+  CLASSROOMS_PER_PAGE,
+  updateMockClassroom,
+  type Classroom,
+  type ClassroomStatus,
+} from "@/lib/classrooms-data";
 import { apiClient } from "./client";
 
 export type ClassroomsListResult = {
@@ -40,4 +48,54 @@ export async function updateClassroomStatus(id: string, status: ClassroomStatus)
 
 export async function deleteClassroom(id: string): Promise<void> {
   await apiClient(`/api/admin/classrooms/${id}`, { method: "DELETE" });
+}
+
+export type ClassroomInput = {
+  name: string;
+  subject: string;
+  schedule: string;
+  capacity: number;
+  enrolled: number;
+  status: ClassroomStatus;
+};
+
+export type ClassroomResult = { classroom: Classroom | null; source: "api" | "mock"; error?: string };
+
+export async function createClassroom(input: ClassroomInput): Promise<ClassroomResult> {
+  try {
+    const classroom = await apiClient<Classroom>("/api/admin/classrooms", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+    return { classroom, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Classrooms API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[classrooms] Saving locally:", message);
+    return { classroom: createMockClassroom(input), source: "mock", error: message };
+  }
+}
+
+export async function getClassroom(id: string): Promise<ClassroomResult> {
+  try {
+    const classroom = await apiClient<Classroom>(`/api/admin/classrooms/${id}`);
+    return { classroom, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Classrooms API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[classrooms] Using demo data:", message);
+    return { classroom: getMockClassroom(id), source: "mock", error: message };
+  }
+}
+
+export async function updateClassroom(id: string, input: Partial<ClassroomInput>): Promise<ClassroomResult> {
+  try {
+    const classroom = await apiClient<Classroom>(`/api/admin/classrooms/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(input),
+    });
+    return { classroom, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Classrooms API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[classrooms] Saving locally:", message);
+    return { classroom: updateMockClassroom(id, input), source: "mock", error: message };
+  }
 }

@@ -5,6 +5,9 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { deleteJob, fetchJobs, updateJobStatus } from "@/lib/api/career";
 import { CAREER_PER_PAGE, type JobPosting, type JobStatus } from "@/lib/career-data";
 import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 type PendingAction = { type: "open" | "close" | "delete"; id: string; title: string };
@@ -52,6 +55,7 @@ const COLUMNS = ["Title", "Department", "Location", "Type", "Status", "Action"] 
 const COL_GRID = "grid-cols-[1.8fr_1.1fr_1fr_1fr_1fr_68px]";
 
 export default function CareerPage() {
+  const router = useRouter();
   const [items, setItems] = useState<JobPosting[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -119,11 +123,20 @@ export default function CareerPage() {
             Manage open roles listed on the Career page.
           </p>
         </div>
-        {source === "mock" && loadError && (
-          <span className="max-w-[220px] shrink-0 text-right text-[10px] font-light text-neutral-500">
-            API error: {loadError}
-          </span>
-        )}
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <Link
+            href="/career/new"
+            className="flex h-10 items-center gap-1.5 rounded-full bg-ifwyd-brand px-4 text-[14px] font-semibold text-white transition-colors hover:bg-ifwyd-brand-dark"
+          >
+            <Plus className="h-4 w-4" strokeWidth={2.5} />
+            New Job Posting
+          </Link>
+          {source === "mock" && loadError && (
+            <span className="max-w-[220px] text-right text-[10px] font-light text-neutral-500">
+              API error: {loadError}
+            </span>
+          )}
+        </div>
       </div>
 
       {actionError && <p className="mt-2 text-[12px] font-medium text-red-600">{actionError}</p>}
@@ -155,6 +168,7 @@ export default function CareerPage() {
                 <ActionMenu
                   ariaLabel="Job actions"
                   items={[
+                    { label: "Edit", onClick: () => router.push(`/career/${job.id}/edit`) },
                     {
                       label: job.status === "Open" ? "Close" : "Reopen",
                       onClick: () =>

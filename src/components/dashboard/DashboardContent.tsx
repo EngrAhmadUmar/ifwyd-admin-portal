@@ -34,7 +34,7 @@ function Tag({ tone, children }: { tone: "type" | "published" | "draft" | "neutr
 }
 
 function ContentRow({ item, onDelete }: { item: ContentItem; onDelete: () => void }) {
-  const editHref = item.type === "News" ? "/news" : "/projects";
+  const editHref = `/posts/${item.sourceId}/edit?type=${item.type === "News" ? "news" : "project"}`;
 
   return (
     <div className="flex items-center gap-4 border-b border-neutral-100 px-6 py-4 last:border-0 hover:bg-neutral-50/60">

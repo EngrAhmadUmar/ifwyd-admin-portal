@@ -1,4 +1,13 @@
-import { mockJobs, CAREER_PER_PAGE, type JobPosting, type JobStatus } from "@/lib/career-data";
+import {
+  createMockJob,
+  getMockJob,
+  mockJobs,
+  CAREER_PER_PAGE,
+  updateMockJob,
+  type JobPosting,
+  type JobStatus,
+  type JobType,
+} from "@/lib/career-data";
 import { apiClient } from "./client";
 
 export type JobsListResult = {
@@ -40,4 +49,54 @@ export async function updateJobStatus(id: string, status: JobStatus): Promise<vo
 
 export async function deleteJob(id: string): Promise<void> {
   await apiClient(`/api/admin/career/${id}`, { method: "DELETE" });
+}
+
+export type JobInput = {
+  title: string;
+  department: string;
+  location: string;
+  description: string;
+  type: JobType;
+  status: JobStatus;
+};
+
+export type JobResult = { job: JobPosting | null; source: "api" | "mock"; error?: string };
+
+export async function createJob(input: JobInput): Promise<JobResult> {
+  try {
+    const job = await apiClient<JobPosting>("/api/admin/career", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+    return { job, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Career API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[career] Saving locally:", message);
+    return { job: createMockJob(input), source: "mock", error: message };
+  }
+}
+
+export async function getJob(id: string): Promise<JobResult> {
+  try {
+    const job = await apiClient<JobPosting>(`/api/admin/career/${id}`);
+    return { job, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Career API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[career] Using demo data:", message);
+    return { job: getMockJob(id), source: "mock", error: message };
+  }
+}
+
+export async function updateJob(id: string, input: Partial<JobInput>): Promise<JobResult> {
+  try {
+    const job = await apiClient<JobPosting>(`/api/admin/career/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(input),
+    });
+    return { job, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Career API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[career] Saving locally:", message);
+    return { job: updateMockJob(id, input), source: "mock", error: message };
+  }
 }

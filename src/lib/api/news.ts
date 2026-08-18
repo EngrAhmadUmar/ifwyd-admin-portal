@@ -1,4 +1,12 @@
-import { createMockNewsPost, mockNews, NEWS_PER_PAGE, type NewsPost, type NewsStatus } from "@/lib/news-data";
+import {
+  createMockNewsPost,
+  getMockNewsPost,
+  mockNews,
+  NEWS_PER_PAGE,
+  updateMockNewsPost,
+  type NewsPost,
+  type NewsStatus,
+} from "@/lib/news-data";
 import { apiClient } from "./client";
 
 export type NewsListResult = {
@@ -47,7 +55,7 @@ export type CreateNewsInput = {
   excerpt: string;
   category: string;
   tags: string[];
-  coverImageUrl: string | null;
+  thumbnailUrl: string | null;
   body: string;
   status: NewsStatus;
 };
@@ -65,5 +73,34 @@ export async function createNews(input: CreateNewsInput): Promise<CreateNewsResu
     const message = error instanceof Error ? error.message : "News API request failed";
     if (process.env.NODE_ENV === "development") console.error("[news] Saving locally:", message);
     return { post: createMockNewsPost(input), source: "mock", error: message };
+  }
+}
+
+export type NewsFetchResult = { post: NewsPost | null; source: "api" | "mock"; error?: string };
+
+export async function getNews(id: string): Promise<NewsFetchResult> {
+  try {
+    const post = await apiClient<NewsPost>(`/api/admin/news/${id}`);
+    return { post, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "News API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[news] Using demo data:", message);
+    return { post: getMockNewsPost(id), source: "mock", error: message };
+  }
+}
+
+export type UpdateNewsInput = Partial<CreateNewsInput>;
+
+export async function updateNews(id: string, input: UpdateNewsInput): Promise<NewsFetchResult> {
+  try {
+    const post = await apiClient<NewsPost>(`/api/admin/news/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(input),
+    });
+    return { post, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "News API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[news] Saving locally:", message);
+    return { post: updateMockNewsPost(id, input), source: "mock", error: message };
   }
 }

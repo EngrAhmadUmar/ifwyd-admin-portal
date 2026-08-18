@@ -1,7 +1,9 @@
 import {
   createMockProject,
+  getMockProject,
   mockProjects,
   PROJECTS_PER_PAGE,
+  updateMockProject,
   type Project,
   type ProjectFocusArea,
   type ProjectStatus,
@@ -54,7 +56,7 @@ export type CreateProjectInput = {
   summary: string;
   focusArea: ProjectFocusArea;
   tags: string[];
-  coverImageUrl: string | null;
+  thumbnailUrl: string | null;
   body: string;
   status: ProjectStatus;
 };
@@ -72,5 +74,34 @@ export async function createProject(input: CreateProjectInput): Promise<CreatePr
     const message = error instanceof Error ? error.message : "Projects API request failed";
     if (process.env.NODE_ENV === "development") console.error("[projects] Saving locally:", message);
     return { project: createMockProject(input), source: "mock", error: message };
+  }
+}
+
+export type ProjectFetchResult = { project: Project | null; source: "api" | "mock"; error?: string };
+
+export async function getProject(id: string): Promise<ProjectFetchResult> {
+  try {
+    const project = await apiClient<Project>(`/api/admin/projects/${id}`);
+    return { project, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Projects API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[projects] Using demo data:", message);
+    return { project: getMockProject(id), source: "mock", error: message };
+  }
+}
+
+export type UpdateProjectInput = Partial<CreateProjectInput>;
+
+export async function updateProject(id: string, input: UpdateProjectInput): Promise<ProjectFetchResult> {
+  try {
+    const project = await apiClient<Project>(`/api/admin/projects/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(input),
+    });
+    return { project, source: "api" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Projects API request failed";
+    if (process.env.NODE_ENV === "development") console.error("[projects] Saving locally:", message);
+    return { project: updateMockProject(id, input), source: "mock", error: message };
   }
 }

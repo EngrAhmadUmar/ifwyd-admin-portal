@@ -7,6 +7,7 @@ import { PROJECTS_PER_PAGE, type Project, type ProjectStatus } from "@/lib/proje
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 type PendingAction = { type: "publish" | "unpublish" | "delete"; id: string; title: string };
@@ -54,6 +55,7 @@ const COLUMNS = ["Title", "Focus Area", "Slug", "Updated", "Status", "Action"] a
 const COL_GRID = "grid-cols-[1.8fr_1fr_1.3fr_1fr_1fr_68px]";
 
 export default function ProjectsPage() {
+  const router = useRouter();
   const [items, setItems] = useState<Project[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -166,6 +168,7 @@ export default function ProjectsPage() {
                 <ActionMenu
                   ariaLabel="Project actions"
                   items={[
+                    { label: "Edit", onClick: () => router.push(`/posts/${project.id}/edit?type=project`) },
                     {
                       label: project.status === "Published" ? "Unpublish" : "Publish",
                       onClick: () =>

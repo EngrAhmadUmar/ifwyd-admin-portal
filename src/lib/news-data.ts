@@ -9,7 +9,7 @@ export type NewsPost = {
   publishedDate: string;
   status: NewsStatus;
   tags?: string[];
-  coverImageUrl?: string | null;
+  thumbnailUrl?: string | null;
   body?: string;
 };
 
@@ -27,7 +27,7 @@ export function createMockNewsPost(input: {
   excerpt: string;
   category: string;
   tags: string[];
-  coverImageUrl: string | null;
+  thumbnailUrl: string | null;
   body: string;
   status: NewsStatus;
 }): NewsPost {
@@ -40,10 +40,32 @@ export function createMockNewsPost(input: {
     publishedDate: formatToday(),
     status: input.status,
     tags: input.tags,
-    coverImageUrl: input.coverImageUrl,
+    thumbnailUrl: input.thumbnailUrl,
     body: input.body,
   };
   mockNews.unshift(post);
+  return post;
+}
+
+export function getMockNewsPost(id: string): NewsPost | null {
+  return mockNews.find((post) => post.id === id) ?? null;
+}
+
+export function updateMockNewsPost(
+  id: string,
+  patch: Partial<{
+    title: string;
+    excerpt: string;
+    category: string;
+    tags: string[];
+    thumbnailUrl: string | null;
+    body: string;
+    status: NewsStatus;
+  }>,
+): NewsPost | null {
+  const post = getMockNewsPost(id);
+  if (!post) return null;
+  Object.assign(post, patch);
   return post;
 }
 

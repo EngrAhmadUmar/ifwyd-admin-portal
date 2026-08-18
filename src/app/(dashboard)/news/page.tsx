@@ -7,6 +7,7 @@ import { NEWS_PER_PAGE, type NewsPost, type NewsStatus } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 type PendingAction = { type: "publish" | "unpublish" | "delete"; id: string; title: string };
@@ -54,6 +55,7 @@ const COLUMNS = ["Title", "Category", "Author", "Published", "Status", "Action"]
 const COL_GRID = "grid-cols-[2fr_1fr_1fr_1fr_1fr_68px]";
 
 export default function NewsPage() {
+  const router = useRouter();
   const [items, setItems] = useState<NewsPost[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -166,6 +168,7 @@ export default function NewsPage() {
                 <ActionMenu
                   ariaLabel="Post actions"
                   items={[
+                    { label: "Edit", onClick: () => router.push(`/posts/${post.id}/edit?type=news`) },
                     {
                       label: post.status === "Published" ? "Unpublish" : "Publish",
                       onClick: () =>
